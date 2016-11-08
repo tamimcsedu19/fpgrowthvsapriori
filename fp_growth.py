@@ -184,7 +184,7 @@ class fpGrowthMiner():
 
         return freq
 
-    def buildFpTree(self,transactions):
+    def buildFpTree(self,transactions,supportThres):
         """
 
         :param transactions:
@@ -204,7 +204,15 @@ class fpGrowthMiner():
             #     marker+=5
 
             sortedT = sorted(t, key=lambda x: (-freq[x], x))
-            globalTree.insert(sortedT)
+            end = len(sortedT)-1
+            while freq[sortedT[end]] < supportThres:
+                end-=1
+                if end == -1:
+                    break
+
+
+            if end !=-1:
+                globalTree.insert(sortedT[:end+1])
             i+=1
 
         return globalTree
@@ -309,7 +317,7 @@ class fpGrowthMiner():
 
 
         self.mined = {}
-        globalTree = self.buildFpTree(transactions)
+        globalTree = self.buildFpTree(transactions,supportThres)
         print("Fp tree built")
         self.fpGrowth(globalTree,[],supportThres)
 
